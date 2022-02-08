@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: rickandmorty
+  datasource:
+    platform: postgres
+    driverClassName: org.postgresql.Driver
+    #url: jdbc:postgresql://pg:5432/studs
+    url: jdbc:postgresql://localhost:5432/studs
+    username:
+    password:
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+    ddl-auto: none
+
+server:
+  port: 10550
+  shutdown: graceful
+  servlet:
+    context-path: /api/v1
