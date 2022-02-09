@@ -1,8 +1,10 @@
 package ru.mariamaximova.bl1.application.customer.domain;
 
 import lombok.*;
+import ru.mariamaximova.bl1.application.comment.domain.Comment;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -13,8 +15,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="customer_seq")
+    @SequenceGenerator(name="customer_seq", sequenceName="customer_seq", allocationSize=1)
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -24,5 +27,8 @@ public class Customer {
 
     @Column(name = "email")
     private String email;
+
+    @OneToMany(mappedBy = "customerId", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
 }

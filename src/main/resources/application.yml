@@ -6,12 +6,12 @@ spring:
     driverClassName: org.postgresql.Driver
     #url: jdbc:postgresql://pg:5432/studs
     url: jdbc:postgresql://localhost:5432/studs
-    username:
-    password:
+    username: s288870
+    password: qta730
   jpa:
     database: POSTGRESQL
     hibernate:
-    ddl-auto: none
+      ddl-auto: none
 
 server:
   port: 10550
