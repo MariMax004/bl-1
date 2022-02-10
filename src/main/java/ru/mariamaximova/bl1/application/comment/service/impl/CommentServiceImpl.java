@@ -41,8 +41,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void saveComment(Long filmId, Long customerId, CommentDto commentDto) {
         log.info("start saveComment({}, {}, {})", filmId, customerId, commentDto);
-        if (ObjectUtils.isEmpty(commentRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
-                customerRepository.getById(customerId))) || !ObjectUtils.isEmpty(commentDto.getId())) {
+        Comment comment = commentRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
+                customerRepository.getById(customerId));
+        if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
+                comment.getId().equals(commentDto.getId())) {
             commentRepository.save(convertToComment(filmId, customerId, commentDto));
         } else {
             log.info("Error save uniq");
