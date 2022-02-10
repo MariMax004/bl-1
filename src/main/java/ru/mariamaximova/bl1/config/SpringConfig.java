@@ -20,6 +20,10 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SpringConfig extends WebSecurityConfigurerAdapter {
 
+    private final JwtUtils jwtUtils;
+
+    private final CustomerRepository customerRepository;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -34,12 +38,16 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/login")
+                .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll()
+                .authenticated()
                 .antMatchers(HttpMethod.GET, "/")
-                .permitAll()
+                .authenticated()
                 .antMatchers(HttpMethod.POST, "/**")
-                .permitAll();
+                .authenticated()
+                .and()
+                .addFilter(new JwtFilter(jwtUtils, customerRepository));
         http.headers().frameOptions().sameOrigin();
     }
 

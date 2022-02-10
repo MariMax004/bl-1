@@ -28,6 +28,9 @@ public class Customer {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
+    private String password;
+
     @OneToMany(mappedBy = "customerId", cascade = CascadeType.ALL)
     private List<Comment> comments;
 

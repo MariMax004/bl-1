@@ -18,3 +18,6 @@ server:
   shutdown: graceful
   servlet:
     context-path: /api/v1
+
+jwt:
+  secret: 'secretKeY123'

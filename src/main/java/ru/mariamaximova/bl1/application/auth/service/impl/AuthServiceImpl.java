@@ -14,7 +14,6 @@ import ru.mariamaximova.bl1.application.auth.domain.User;
 import ru.mariamaximova.bl1.application.auth.domain.UserRepository;
 import ru.mariamaximova.bl1.application.auth.model.LoginResponse;
 import ru.mariamaximova.bl1.application.auth.service.AuthService;
-import ru.mariamaximova.bl1.application.security.JwtUtils;
 
 
 @Service
@@ -25,7 +24,6 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
 //    TODO: setup AuthenticationManager
     final AuthenticationManager authenticationManager;
-    final JwtUtils jwtUtils;
 //    private final BCryptPasswordEncoder bCryptPasswordEncoder; // need if we will save users to encrypt password
 
 
