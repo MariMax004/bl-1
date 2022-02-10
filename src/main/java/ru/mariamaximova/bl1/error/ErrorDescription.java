@@ -11,6 +11,10 @@ public enum ErrorDescription {
 
     SAVE_COMMENT_ERROR("Ошибка сохранения коментария"),
     SAVE_COMMENT_ERROR_UNIQ("Комментарий пользователя уже был добавлен"),
+    REGISTRATION_ERROR_USER_IS_PRESENT("Пользователь уже зарегестрирован в системе"),
+    AUTH_PASSWORD_ERROR("Введён некорректный пароль"),
+    AUTH_LOGIN_ERROR("Введён некорректный логин"),
+    CUSTOMER_NOT_LOGIN_ERROR("Пользователь уже вышел"),
 
     UNAUTHORIZED_ACCESS("Неавторизованный доступ"),
     ACCESS_DENIED("Недостаточно прав для доступа к ресурсу"),

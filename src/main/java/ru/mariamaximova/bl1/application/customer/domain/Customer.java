@@ -1,6 +1,7 @@
 package ru.mariamaximova.bl1.application.customer.domain;
 
 import lombok.*;
+import ru.mariamaximova.bl1.application.auth.domain.Token;
 import ru.mariamaximova.bl1.application.comment.domain.Comment;
 
 import javax.persistence.*;
@@ -34,4 +35,6 @@ public class Customer {
     @OneToMany(mappedBy = "customerId", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "customerId", cascade = CascadeType.ALL)
+    private List<Token> tokens;
 }

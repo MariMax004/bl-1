@@ -1,11 +1,12 @@
 package ru.mariamaximova.bl1.application.auth.service;
 
-import org.springframework.http.ResponseEntity;
-import ru.mariamaximova.bl1.application.auth.domain.User;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.mariamaximova.bl1.application.auth.model.AuthDto;
+import ru.mariamaximova.bl1.application.auth.model.RegistrationDto;
+import ru.mariamaximova.bl1.application.auth.model.TokenDto;
 
 public interface AuthService {
-    ResponseEntity<String> signin(User user);
+    TokenDto registration(RegistrationDto registrationDto);
 
-//    public boolean saveUser(User user);
-//    TODO: add registration
+    TokenDto login(AuthDto authDto);
 }

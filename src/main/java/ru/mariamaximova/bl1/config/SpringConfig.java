@@ -7,12 +7,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
+import ru.mariamaximova.bl1.error.ErrorDescription;
+import ru.mariamaximova.bl1.error.HttpResponseUtils;
+import ru.mariamaximova.bl1.error.model.ApplicationErrorDto;
 import ru.mariamaximova.bl1.utils.JwtUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 
 @Configuration
@@ -20,7 +27,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SpringConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtUtils jwtUtils;
+    private final JwtFilter jwtFilter;
 
     private final CustomerRepository customerRepository;
 
@@ -36,19 +43,24 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(authenticationEntryPoint())
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login")
                 .permitAll()
+                .antMatchers(HttpMethod.GET, "/swagger-ui.html")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/registration")
+                .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .authenticated()
-                .antMatchers(HttpMethod.GET, "/")
+                .antMatchers(HttpMethod.GET, "/**")
                 .authenticated()
                 .antMatchers(HttpMethod.POST, "/**")
-                .authenticated()
-                .and()
-                .addFilter(new JwtFilter(jwtUtils, customerRepository));
+                .authenticated();
         http.headers().frameOptions().sameOrigin();
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     /**
@@ -64,5 +76,25 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
         source.setAlwaysUseFullPath(true);
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    /**
+     * {@see AccessDeniedHandler}.
+     */
+    private AccessDeniedHandler accessDeniedHandler() {
+        ErrorDescription errorDescription = ErrorDescription.ACCESS_DENIED;
+        ApplicationErrorDto error = ApplicationErrorDto.of(errorDescription.getMessage());
+        return (request, response, ex) -> HttpResponseUtils.writeError(response, error,
+                HttpServletResponse.SC_FORBIDDEN);
+    }
+
+    /**
+     * {@see AuthenticationEntryPoint}.
+     */
+    private AuthenticationEntryPoint authenticationEntryPoint() {
+        ErrorDescription errorDescription = ErrorDescription.UNAUTHORIZED_ACCESS;
+        ApplicationErrorDto error = ApplicationErrorDto.of(errorDescription.getMessage());
+        return (request, response, ex) -> HttpResponseUtils.writeError(response, error,
+                HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

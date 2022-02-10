@@ -1,31 +1,43 @@
 package ru.mariamaximova.bl1.error;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.mariamaximova.bl1.error.model.ApplicationErrorDto;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.NonUniqueResultException;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Обработчик ошибки.
  *
  * @author Iuri Babalin.
  */
-@ControllerAdvice
+@Component
+@RequiredArgsConstructor
 public class HttpResponseUtils extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ApplicationException.class)
-    protected ResponseEntity<ApplicationErrorDto> handleThereIsApplicationException(Exception ex) {
-        return new ResponseEntity<>(ApplicationErrorDto.of(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    private static ObjectMapper staticObjectMapper;
+    private final ObjectMapper objectMapper;
+
+    @SneakyThrows
+    public static void writeError(HttpServletResponse response, ApplicationErrorDto error, int status) {
+        response.setContentType("application/json; charset=utf-8");
+        response.setStatus(status);
+        staticObjectMapper.writeValue(response.getOutputStream(), error);
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class, NonUniqueResultException.class})
-    protected ResponseEntity<ApplicationErrorDto> handleThereIsNoSuchException() {
-        return new ResponseEntity<>(ApplicationErrorDto.of("Ошибка сохранения"), HttpStatus.BAD_REQUEST);
+    @PostConstruct
+    public void postConstruct() {
+        staticObjectMapper = this.objectMapper;
     }
 
 }
+
