@@ -10,6 +10,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
+import ru.mariamaximova.bl1.utils.JwtUtils;
 
 import java.util.Collections;
 
