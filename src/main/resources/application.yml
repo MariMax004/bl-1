@@ -7,7 +7,7 @@ spring:
     #url: jdbc:postgresql://pg:5432/studs
     url: jdbc:postgresql://localhost:5432/studs
     username: s288870
-    password: qta730
+    password: 
   jpa:
     database: POSTGRESQL
     hibernate:
