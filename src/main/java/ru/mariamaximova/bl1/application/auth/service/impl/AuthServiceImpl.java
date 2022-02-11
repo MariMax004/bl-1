@@ -16,6 +16,7 @@ import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 import ru.mariamaximova.bl1.utils.JwtUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -62,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
         customer.setLastName(registrationDto.getLastName());
         token.setCustomerId(customer);
         token.setToken(jwtUtils.generateToken(registrationDto.getEmail()));
-        customer.setTokens(List.of(token));
+        customer.setTokens(Arrays.asList(token));
         return customer;
     }
 }

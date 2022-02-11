@@ -56,7 +56,7 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .authenticated()
                 .antMatchers(HttpMethod.GET, "/**")
-                .authenticated()
+                .permitAll()
                 .antMatchers(HttpMethod.POST, "/**")
                 .authenticated();
         http.headers().frameOptions().sameOrigin();
