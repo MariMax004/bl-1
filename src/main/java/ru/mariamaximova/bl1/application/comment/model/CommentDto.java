@@ -6,7 +6,5 @@ import lombok.Data;
 public class CommentDto {
     private Long id;
 
-    private Long rating;
-
     private String comment;
 }

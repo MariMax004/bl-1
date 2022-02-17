@@ -1,18 +1,18 @@
-package ru.mariamaximova.bl1.application.comment.service.impl;
+package ru.mariamaximova.bl1.application.rating.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import ru.mariamaximova.bl1.application.comment.domain.Comment;
-import ru.mariamaximova.bl1.application.comment.domain.CommentRepository;
-import ru.mariamaximova.bl1.application.comment.model.CommentDto;
-import ru.mariamaximova.bl1.application.comment.model.ResponseCommentDto;
-import ru.mariamaximova.bl1.application.comment.service.CommentService;
 import ru.mariamaximova.bl1.application.customer.domain.Customer;
 import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
 import ru.mariamaximova.bl1.application.customer.model.CustomerDto;
 import ru.mariamaximova.bl1.application.fiml.domain.FilmRepository;
+import ru.mariamaximova.bl1.application.rating.domain.Rating;
+import ru.mariamaximova.bl1.application.rating.domain.RatingRepository;
+import ru.mariamaximova.bl1.application.rating.model.RatingDto;
+import ru.mariamaximova.bl1.application.rating.model.ResponseRatingDto;
+import ru.mariamaximova.bl1.application.rating.service.RatingService;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 
 import java.util.Comparator;
@@ -22,30 +22,30 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class CommentServiceImpl implements CommentService {
+public class RatingServiceImpl implements RatingService {
 
-    private final CommentRepository commentRepository;
+    private final RatingRepository ratingRepository;
 
     private final FilmRepository filmRepository;
 
     private final CustomerRepository customerRepository;
 
     @Override
-    public List<ResponseCommentDto> getComments(Long filmId) {
+    public List<ResponseRatingDto> getRatings(Long filmId) {
         log.info("start getComment({})", filmId);
-        return commentRepository.findAllByFilmId(filmRepository.getById(filmId)).stream()
-                .map(this::convertToCommentDto).sorted(Comparator.comparingLong(ResponseCommentDto::getId))
+        return ratingRepository.findAllByFilmId(filmRepository.getById(filmId)).stream()
+                .map(this::convertToRatingDto).sorted(Comparator.comparingLong(ResponseRatingDto::getId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void saveComment(Long filmId, Long customerId, CommentDto commentDto) {
+    public void saveRating(Long filmId, Long customerId, RatingDto commentDto) {
         log.info("start saveComment({}, {}, {})", filmId, customerId, commentDto);
-        Comment comment = commentRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
+        Rating comment = ratingRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
                 customerRepository.getById(customerId));
         if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
                 comment.getId().equals(commentDto.getId())) {
-            commentRepository.save(convertToComment(filmId, customerId, commentDto));
+            ratingRepository.save(convertToRating(filmId, customerId, commentDto));
         } else {
             log.info("Error save uniq");
             throw ErrorDescription.SAVE_COMMENT_ERROR_UNIQ.exception();
@@ -53,11 +53,11 @@ public class CommentServiceImpl implements CommentService {
         log.info("complete save");
     }
 
-    private ResponseCommentDto convertToCommentDto(Comment comment) {
-        ResponseCommentDto responseCommentDto = new ResponseCommentDto();
+    private ResponseRatingDto convertToRatingDto(Rating comment) {
+        ResponseRatingDto responseCommentDto = new ResponseRatingDto();
         responseCommentDto.setId(comment.getId());
         responseCommentDto.setCustomerDto(convertToCustomerDto(comment.getCustomerId()));
-        responseCommentDto.setComment(comment.getComment());
+        responseCommentDto.setRating(comment.getRating());
         return responseCommentDto;
     }
 
@@ -70,15 +70,15 @@ public class CommentServiceImpl implements CommentService {
         return customerDto;
     }
 
-    private Comment convertToComment(Long filmId, Long customerId, CommentDto commentDto) {
-        Comment comment = new Comment();
+    private Rating convertToRating(Long filmId, Long customerId, RatingDto commentDto) {
+        Rating rating = new Rating();
         if (!ObjectUtils.isEmpty(commentDto.getId())) {
-            comment.setId(commentDto.getId());
+            rating.setId(commentDto.getId());
         }
-        comment.setCustomerId(customerRepository.getById(customerId));
-        comment.setFilmId(filmRepository.getById(filmId));
-        comment.setComment(commentDto.getComment());
-        return comment;
+        rating.setCustomerId(customerRepository.getById(customerId));
+        rating.setFilmId(filmRepository.getById(filmId));
+        rating.setRating(commentDto.getRating());
+        return rating;
     }
 
 }
