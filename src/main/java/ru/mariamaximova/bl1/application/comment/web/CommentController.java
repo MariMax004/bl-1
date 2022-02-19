@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mariamaximova.bl1.application.comment.model.CommentDto;
 import ru.mariamaximova.bl1.application.comment.model.ResponseCommentDto;
 import ru.mariamaximova.bl1.application.comment.service.CommentService;
+import ru.mariamaximova.bl1.application.rating.model.RatingDto;
+import ru.mariamaximova.bl1.application.rating.service.RatingService;
 
 import java.util.List;
 

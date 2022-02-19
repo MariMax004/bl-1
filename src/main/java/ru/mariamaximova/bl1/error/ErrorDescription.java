@@ -11,6 +11,7 @@ public enum ErrorDescription {
 
     SAVE_COMMENT_ERROR("Ошибка сохранения коментария"),
     SAVE_COMMENT_ERROR_UNIQ("Комментарий пользователя уже был добавлен"),
+    SAVE_RATING_ERROR_UNIQ("Рейтинг не может быть сохранен"),
     REGISTRATION_ERROR_USER_IS_PRESENT("Пользователь уже зарегестрирован в системе"),
     AUTH_PASSWORD_ERROR("Введён некорректный пароль"),
     AUTH_LOGIN_ERROR("Введён некорректный логин"),

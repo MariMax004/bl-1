@@ -1,6 +1,7 @@
 package ru.mariamaximova.bl1.application.rating.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -15,6 +16,7 @@ import ru.mariamaximova.bl1.application.rating.model.ResponseRatingDto;
 import ru.mariamaximova.bl1.application.rating.service.RatingService;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 
+import javax.transaction.UserTransaction;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,15 +34,16 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public List<ResponseRatingDto> getRatings(Long filmId) {
-        log.info("start getComment({})", filmId);
+        log.info("start getRatings({})", filmId);
         return ratingRepository.findAllByFilmId(filmRepository.getById(filmId)).stream()
                 .map(this::convertToRatingDto).sorted(Comparator.comparingLong(ResponseRatingDto::getId))
                 .collect(Collectors.toList());
     }
 
+    @SneakyThrows
     @Override
     public void saveRating(Long filmId, Long customerId, RatingDto commentDto) {
-        log.info("start saveComment({}, {}, {})", filmId, customerId, commentDto);
+        log.info("start saveRating({}, {}, {})", filmId, customerId, commentDto);
         Rating comment = ratingRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
                 customerRepository.getById(customerId));
         if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
@@ -48,7 +51,7 @@ public class RatingServiceImpl implements RatingService {
             ratingRepository.save(convertToRating(filmId, customerId, commentDto));
         } else {
             log.info("Error save uniq");
-            throw ErrorDescription.SAVE_COMMENT_ERROR_UNIQ.exception();
+            throw ErrorDescription.SAVE_RATING_ERROR_UNIQ.exception();
         }
         log.info("complete save");
     }
