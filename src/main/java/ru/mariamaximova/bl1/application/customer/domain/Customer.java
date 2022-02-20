@@ -32,6 +32,9 @@ public class Customer {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "is_moderator")
+    private boolean is_moderator;
+
     @OneToMany(mappedBy = "customerId", cascade = CascadeType.ALL)
     private List<Comment> comments;
 

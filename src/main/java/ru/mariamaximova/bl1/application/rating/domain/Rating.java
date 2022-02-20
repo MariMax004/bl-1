@@ -30,4 +30,7 @@ public class Rating {
     @Column(name = "rating")
     private Long rating;
 
+    @Column(name = "is_active")
+    private boolean is_active;
 }
+

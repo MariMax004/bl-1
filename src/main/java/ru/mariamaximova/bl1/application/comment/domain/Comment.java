@@ -29,4 +29,7 @@ public class Comment {
 
     @Column(name = "comment")
     private String comment;
+
+    @Column(name = "is_active")
+    private boolean is_active;
 }

@@ -10,4 +10,8 @@ public interface RatingService {
     List<ResponseRatingDto> getRatings(Long filmId);
 
     void saveRating(Long filmId, Long customerId, RatingDto commentDto);
+    void deleteRating(Long id);
+    void updateStatusRating(Long id);
+
+
 }

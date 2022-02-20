@@ -56,6 +56,17 @@ public class RatingServiceImpl implements RatingService {
         log.info("complete save");
     }
 
+
+    @Override
+    public void deleteRating(Long comment_id) {
+        ratingRepository.deleteById(comment_id);
+    }
+
+    @Override
+    public void updateStatusRating(Long comment_id) {
+        ratingRepository.getById(comment_id).set_active(true);
+    }
+
     private ResponseRatingDto convertToRatingDto(Rating comment) {
         ResponseRatingDto responseCommentDto = new ResponseRatingDto();
         responseCommentDto.setId(comment.getId());

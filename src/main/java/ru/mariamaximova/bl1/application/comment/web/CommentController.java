@@ -21,6 +21,17 @@ public class CommentController {
         return commentService.getComments(filmId);
     }
 
+    @GetMapping(value = "/updateStatus/{commentId}")
+    public void updateStatusComment(@PathVariable Long commentId){
+        commentService.updateStatusComment(commentId);
+    }
+
+    @DeleteMapping(value = "/delete/{commentId}")
+    public void deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
+    }
+
+
     @PostMapping(value = "/film/{filmId}/customer/{customerId}/comment/save")
     public void saveComment(@PathVariable Long filmId,
                             @PathVariable Long customerId,

@@ -11,4 +11,5 @@ public class CustomerDto {
     private String lastName;
 
     private String email;
+    private boolean is_moderator;
 }

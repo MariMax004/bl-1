@@ -10,4 +10,6 @@ public class CommentDto {
     private String comment;
 
     private RatingDto rating;
+
+    private boolean is_active;
 }
