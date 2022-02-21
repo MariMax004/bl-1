@@ -49,9 +49,11 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/swagger-ui.html")
+                .antMatchers(AUTH_WHITELIST)
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/registration")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/film/{filmId}/comments")
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .authenticated()
@@ -97,4 +99,13 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
         return (request, response, ex) -> HttpResponseUtils.writeError(response, error,
                 HttpServletResponse.SC_UNAUTHORIZED);
     }
+
+    private static final String[] AUTH_WHITELIST = {
+            "/authenticate",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/webjars/**"
+    };
 }

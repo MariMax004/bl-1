@@ -10,4 +10,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByFilmId(Film filmId);
 
     Comment getByFilmIdAndCustomerId(Film filmId, Customer customerId);
+    void deleteById(Long id);
+    Comment getCommentById(Long id);
 }

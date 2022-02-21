@@ -3,6 +3,7 @@ package ru.mariamaximova.bl1.application.comment.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import ru.mariamaximova.bl1.application.comment.domain.Comment;
 import ru.mariamaximova.bl1.application.comment.domain.CommentRepository;
@@ -13,6 +14,7 @@ import ru.mariamaximova.bl1.application.customer.domain.Customer;
 import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
 import ru.mariamaximova.bl1.application.customer.model.CustomerDto;
 import ru.mariamaximova.bl1.application.fiml.domain.FilmRepository;
+import ru.mariamaximova.bl1.application.rating.service.RatingService;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 
 import java.util.Comparator;
@@ -30,6 +32,8 @@ public class CommentServiceImpl implements CommentService {
 
     private final CustomerRepository customerRepository;
 
+    private final RatingService ratingService;
+
     @Override
     public List<ResponseCommentDto> getComments(Long filmId) {
         log.info("start getComment({})", filmId);
@@ -39,6 +43,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void saveComment(Long filmId, Long customerId, CommentDto commentDto) {
         log.info("start saveComment({}, {}, {})", filmId, customerId, commentDto);
         Comment comment = commentRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
@@ -50,7 +55,23 @@ public class CommentServiceImpl implements CommentService {
             log.info("Error save uniq");
             throw ErrorDescription.SAVE_COMMENT_ERROR_UNIQ.exception();
         }
+        ratingService.saveRating(filmId, customerId, commentDto.getRating());
         log.info("complete save");
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteComment(Long comment_id) {
+       commentRepository.deleteById(comment_id);
+       ratingService.deleteRating(comment_id);
+    }
+
+    @Override
+    @Transactional
+    public void updateStatusComment(Long comment_id) {
+        commentRepository.getCommentById(comment_id).set_active(true);
+        ratingService.updateStatusRating(comment_id);
     }
 
     private ResponseCommentDto convertToCommentDto(Comment comment) {
@@ -58,7 +79,6 @@ public class CommentServiceImpl implements CommentService {
         responseCommentDto.setId(comment.getId());
         responseCommentDto.setCustomerDto(convertToCustomerDto(comment.getCustomerId()));
         responseCommentDto.setComment(comment.getComment());
-        responseCommentDto.setRating(comment.getRating());
         return responseCommentDto;
     }
 
@@ -79,7 +99,6 @@ public class CommentServiceImpl implements CommentService {
         comment.setCustomerId(customerRepository.getById(customerId));
         comment.setFilmId(filmRepository.getById(filmId));
         comment.setComment(commentDto.getComment());
-        comment.setRating(commentDto.getRating());
         return comment;
     }
 

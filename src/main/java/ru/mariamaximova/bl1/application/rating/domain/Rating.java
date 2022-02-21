@@ -1,4 +1,4 @@
-package ru.mariamaximova.bl1.application.comment.domain;
+package ru.mariamaximova.bl1.application.rating.domain;
 
 import lombok.*;
 import ru.mariamaximova.bl1.application.customer.domain.Customer;
@@ -8,15 +8,15 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "comment")
+@Table(name = "rating")
 @ToString(of = "id")
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class Comment {
+public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="comment_seq")
-    @SequenceGenerator(name="comment_seq", sequenceName="comment_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="rating_seq")
+    @SequenceGenerator(name="rating_seq", sequenceName="rating_seq", allocationSize=1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,9 +27,10 @@ public class Comment {
     @JoinColumn(name = "film_id")
     private Film filmId;
 
-    @Column(name = "comment")
-    private String comment;
+    @Column(name = "rating")
+    private Long rating;
 
     @Column(name = "is_active")
     private boolean is_active;
 }
+

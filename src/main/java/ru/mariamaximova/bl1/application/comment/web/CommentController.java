@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mariamaximova.bl1.application.comment.model.CommentDto;
 import ru.mariamaximova.bl1.application.comment.model.ResponseCommentDto;
 import ru.mariamaximova.bl1.application.comment.service.CommentService;
+import ru.mariamaximova.bl1.application.rating.model.RatingDto;
+import ru.mariamaximova.bl1.application.rating.service.RatingService;
 
 import java.util.List;
 
@@ -18,6 +20,17 @@ public class CommentController {
     public List<ResponseCommentDto> getComments(@PathVariable Long filmId) {
         return commentService.getComments(filmId);
     }
+
+    @GetMapping(value = "/updateStatus/{commentId}")
+    public void updateStatusComment(@PathVariable Long commentId){
+        commentService.updateStatusComment(commentId);
+    }
+
+    @DeleteMapping(value = "/delete/{commentId}")
+    public void deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
+    }
+
 
     @PostMapping(value = "/film/{filmId}/customer/{customerId}/comment/save")
     public void saveComment(@PathVariable Long filmId,

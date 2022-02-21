@@ -17,7 +17,8 @@ import ru.mariamaximova.bl1.application.customer.domain.Customer;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 import ru.mariamaximova.bl1.utils.JwtUtils;
 
-import java.util.Arrays;
+import java.util.Collections;
+
 
 @Service
 @Slf4j
@@ -29,7 +30,6 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtils jwtUtils;
 
     @Override
-
     public TokenDto registration(RegistrationDto registrationDto) {
         UserXmlRepository userXmlRepository = new UserXmlRepository(tokenRepository);
         UserXmlDto user = userXmlRepository.getCustomerByEmail(registrationDto.getEmail());
@@ -62,8 +62,7 @@ public class AuthServiceImpl implements AuthService {
         customer.setLastName(registrationDto.getLastName());
         token.setCustomerId(customer);
         token.setToken(jwtUtils.generateToken(registrationDto.getEmail()));
-        customer.setTokens(Arrays.asList(token));
-        System.out.println(customer.getTokens().get(0).getToken());
+        customer.setTokens(Collections.singletonList(token));
         return customer;
     }
 }
