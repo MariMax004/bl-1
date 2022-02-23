@@ -49,15 +49,15 @@ public class RatingServiceImpl implements RatingService {
     public void saveRating(Long filmId, Long customerId, RatingDto commentDto) {
         log.info("start saveRating({}, {}, {})", filmId, customerId, commentDto);
 
-        userTransaction.begin();
+//        userTransaction.begin();
         Rating comment = ratingRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
                 customerRepository.getById(customerId));
         if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
                 comment.getId().equals(commentDto.getId())) {
             ratingRepository.save(convertToRating(filmId, customerId, commentDto));
-            userTransaction.commit();
+//            userTransaction.commit();
         } else {
-            userTransaction.rollback();
+//            userTransaction.rollback();
             log.info("Error save uniq");
             throw ErrorDescription.SAVE_RATING_ERROR_UNIQ.exception();
         }

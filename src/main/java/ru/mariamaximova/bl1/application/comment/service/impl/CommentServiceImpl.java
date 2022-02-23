@@ -58,8 +58,8 @@ public class CommentServiceImpl implements CommentService {
         if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
                 comment.getId().equals(commentDto.getId())) {
             commentRepository.save(convertToComment(filmId, customerId, commentDto));
-            userTransaction.commit();
             ratingService.saveRating(filmId, customerId, commentDto.getRating());
+            userTransaction.commit();
         } else {
             userTransaction.rollback();
             log.info("Error save uniq");
