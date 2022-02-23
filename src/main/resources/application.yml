@@ -18,7 +18,7 @@ spring:
 
 
 server:
-  port: 10550
+  port: 10551
   shutdown: graceful
   servlet:
     context-path: /api/v1

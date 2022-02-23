@@ -16,6 +16,7 @@ import ru.mariamaximova.bl1.application.rating.model.ResponseRatingDto;
 import ru.mariamaximova.bl1.application.rating.service.RatingService;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 
+import javax.transaction.Transactional;
 import javax.transaction.UserTransaction;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +33,8 @@ public class RatingServiceImpl implements RatingService {
 
     private final CustomerRepository customerRepository;
 
+    private final UserTransaction userTransaction;
+
     @Override
     public List<ResponseRatingDto> getRatings(Long filmId) {
         log.info("start getRatings({})", filmId);
@@ -40,29 +43,43 @@ public class RatingServiceImpl implements RatingService {
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     @Override
+    @Transactional
+    @SneakyThrows
     public void saveRating(Long filmId, Long customerId, RatingDto commentDto) {
         log.info("start saveRating({}, {}, {})", filmId, customerId, commentDto);
+
+        userTransaction.begin();
         Rating comment = ratingRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
                 customerRepository.getById(customerId));
         if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
                 comment.getId().equals(commentDto.getId())) {
             ratingRepository.save(convertToRating(filmId, customerId, commentDto));
+            userTransaction.commit();
         } else {
+            userTransaction.rollback();
             log.info("Error save uniq");
             throw ErrorDescription.SAVE_RATING_ERROR_UNIQ.exception();
         }
+
         log.info("complete save");
     }
 
 
     @Override
+    @Transactional
+    @SneakyThrows
     public void deleteRating(Long comment_id) {
-        ratingRepository.deleteById(comment_id);
+        if (!ObjectUtils.isEmpty(ratingRepository.findById(comment_id))) {
+            ratingRepository.deleteById(comment_id);
+        } else {
+            throw ErrorDescription.RATING_NOT_FOUND.exception();
+        }
     }
 
     @Override
+    @Transactional
+    @SneakyThrows
     public void updateStatusRating(Long comment_id) {
         ratingRepository.getById(comment_id).set_active(true);
     }

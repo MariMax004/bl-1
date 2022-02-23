@@ -16,6 +16,8 @@ public enum ErrorDescription {
     AUTH_PASSWORD_ERROR("Введён некорректный пароль"),
     AUTH_LOGIN_ERROR("Введён некорректный логин"),
     CUSTOMER_NOT_LOGIN_ERROR("Пользователь уже вышел"),
+    COMMENT_NOT_FOUND("Комментарий был не найден"),
+    RATING_NOT_FOUND("Рэйтинг небыл найден"),
 
     UNAUTHORIZED_ACCESS("Неавторизованный доступ"),
     ACCESS_DENIED("Недостаточно прав для доступа к ресурсу"),
