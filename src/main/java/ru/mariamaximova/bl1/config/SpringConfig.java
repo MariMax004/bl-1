@@ -13,11 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 import ru.mariamaximova.bl1.error.HttpResponseUtils;
 import ru.mariamaximova.bl1.error.model.ApplicationErrorDto;
-import ru.mariamaximova.bl1.utils.JwtUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
@@ -29,7 +27,7 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtFilter jwtFilter;
 
-    private final CustomerRepository customerRepository;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -60,7 +58,11 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/**")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/**")
-                .authenticated();
+                .authenticated()
+                .antMatchers(HttpMethod.DELETE, "/**")
+                .hasAnyAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/updateStatus/{commentId}")
+                .hasAnyAuthority("ADMIN");
         http.headers().frameOptions().sameOrigin();
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
