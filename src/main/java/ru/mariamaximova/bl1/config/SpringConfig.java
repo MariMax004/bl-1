@@ -17,7 +17,6 @@ import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 import ru.mariamaximova.bl1.error.HttpResponseUtils;
 import ru.mariamaximova.bl1.error.model.ApplicationErrorDto;
-import ru.mariamaximova.bl1.utils.JwtUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;

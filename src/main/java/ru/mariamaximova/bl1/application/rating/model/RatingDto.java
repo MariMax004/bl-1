@@ -8,4 +8,12 @@ public class RatingDto {
     private boolean is_active;
     private Long rating;
 
+    public RatingDto() {
+    }
+
+    public RatingDto(Long id, boolean is_active, Long rating) {
+        this.id = id;
+        this.is_active = is_active;
+        this.rating = rating;
+    }
 }

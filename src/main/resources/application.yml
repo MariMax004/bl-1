@@ -7,7 +7,7 @@ spring:
   datasource:
     platform: postgres
     driverClassName: org.postgresql.Driver
-    #url: jdbc:postgresql://pg:5432/studs
+#    url: jdbc:postgresql://pg:5432/studs
     url: jdbc:postgresql://localhost:10109/studs
     username: s288870
     password: qta730
@@ -18,7 +18,7 @@ spring:
 
 
 server:
-  port: 10550
+  port: 10551
   shutdown: graceful
   servlet:
     context-path: /api/v1

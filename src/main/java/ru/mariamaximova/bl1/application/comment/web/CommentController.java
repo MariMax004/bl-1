@@ -23,6 +23,7 @@ public class CommentController {
 
     @GetMapping(value = "/updateStatus/{commentId}")
     public void updateStatusComment(@PathVariable Long commentId){
+
         commentService.updateStatusComment(commentId);
     }
 
