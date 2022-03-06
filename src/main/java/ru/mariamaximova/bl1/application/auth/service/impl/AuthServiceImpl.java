@@ -10,9 +10,10 @@ import ru.mariamaximova.bl1.application.auth.domain.TokenRepository;
 import ru.mariamaximova.bl1.application.auth.model.AuthDto;
 import ru.mariamaximova.bl1.application.auth.model.RegistrationDto;
 import ru.mariamaximova.bl1.application.auth.model.TokenDto;
+import ru.mariamaximova.bl1.application.auth.model.UserXmlDto;
 import ru.mariamaximova.bl1.application.auth.service.AuthService;
+import ru.mariamaximova.bl1.application.auth.xml.UserXmlRepository;
 import ru.mariamaximova.bl1.application.customer.domain.Customer;
-import ru.mariamaximova.bl1.application.customer.domain.CustomerRepository;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 import ru.mariamaximova.bl1.utils.JwtUtils;
 
@@ -24,29 +25,29 @@ import java.util.Collections;
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final CustomerRepository customerRepository;
-
     protected final TokenRepository tokenRepository;
 
     private final JwtUtils jwtUtils;
 
     @Override
     public TokenDto registration(RegistrationDto registrationDto) {
-        Customer customer = customerRepository.getCustomerByEmail(registrationDto.getEmail());
-        ErrorDescription.REGISTRATION_ERROR_USER_IS_PRESENT.throwIfTrue(!ObjectUtils.isEmpty(customer));
-        customer = customerRepository.save(convertToCustomer(registrationDto));
+        UserXmlRepository userXmlRepository = new UserXmlRepository(tokenRepository);
+        UserXmlDto user = userXmlRepository.getCustomerByEmail(registrationDto.getEmail());
+        ErrorDescription.REGISTRATION_ERROR_USER_IS_PRESENT.throwIfTrue(!ObjectUtils.isEmpty(user));
+        Customer customer = convertToCustomer(registrationDto);
+        userXmlRepository.save(customer);
         return TokenDto.of(customer.getTokens().get(0).getToken());
     }
 
     @Override
     public TokenDto login(AuthDto authDto) {
-        Customer customer = customerRepository.getCustomerByEmail(authDto.getLogin());
-        ErrorDescription.AUTH_LOGIN_ERROR.throwIfFalse(!ObjectUtils.isEmpty(customer));
+        UserXmlRepository userXmlRepository = new UserXmlRepository(tokenRepository);
+        UserXmlDto user = userXmlRepository.getCustomerByEmail(authDto.getLogin());
+        ErrorDescription.AUTH_LOGIN_ERROR.throwIfFalse(!ObjectUtils.isEmpty(user));
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         ErrorDescription.AUTH_PASSWORD_ERROR.throwIfFalse(passwordEncoder.matches(authDto.getPassword(),
-                customer.getPassword()));
+                user.getPassword()));
         Token token = new Token();
-        token.setCustomerId(customer);
         token.setToken(jwtUtils.generateToken(authDto.getLogin()));
         tokenRepository.save(token);
         return TokenDto.of(token.getToken());

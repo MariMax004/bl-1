@@ -1,0 +1,18 @@
+<users>
+    <user>
+        <id>4</id>
+        <email>senya@antipin</email>
+        <password>$2a$10$9OHrG9XqAc/ef4ALgYdJAeue3b4lch3ynxco7ykFQn1MUuIZYq2yK</password>
+        <firstName>Arsentii</firstName>
+        <lastName>Antipin</lastName>
+        <isModerator>True</isModerator>
+    </user>
+    <user>
+        <id>2</id>
+        <email>mari@gmail.com</email>
+        <password>$2a$10$ob9H2ILgA1z0Awd.yNOqxuUQPoaxUx7b/Vwu1fXfFrSMgK7CL3sbW</password>
+        <firstName>Мария</firstName>
+        <lastName>Максимова</lastName>
+        <isModerator>False</isModerator>
+    </user>
+</users>

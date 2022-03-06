@@ -1,6 +1,7 @@
 package ru.mariamaximova.bl1.application.rating.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -15,7 +16,6 @@ import ru.mariamaximova.bl1.application.rating.model.ResponseRatingDto;
 import ru.mariamaximova.bl1.application.rating.service.RatingService;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 
-import javax.transaction.Transactional;
 import javax.transaction.UserTransaction;
 import java.util.Comparator;
 import java.util.List;
@@ -32,8 +32,6 @@ public class RatingServiceImpl implements RatingService {
 
     private final CustomerRepository customerRepository;
 
-    private final UserTransaction userTransaction;
-
     @Override
     public List<ResponseRatingDto> getRatings(Long filmId) {
         log.info("start getRatings({})", filmId);
@@ -42,25 +40,18 @@ public class RatingServiceImpl implements RatingService {
                 .collect(Collectors.toList());
     }
 
+    @SneakyThrows
     @Override
-    @Transactional
     public void saveRating(Long filmId, Long customerId, RatingDto commentDto) {
         log.info("start saveRating({}, {}, {})", filmId, customerId, commentDto);
-        try {
-            userTransaction.begin();
-            Rating comment = ratingRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
-                    customerRepository.getById(customerId));
-            if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
-                    comment.getId().equals(commentDto.getId())) {
-                ratingRepository.save(convertToRating(filmId, customerId, commentDto));
-                userTransaction.commit();
-            } else {
-                userTransaction.rollback();
-                log.info("Error save uniq");
-                throw ErrorDescription.SAVE_RATING_ERROR_UNIQ.exception();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Rating comment = ratingRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
+                customerRepository.getById(customerId));
+        if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
+                comment.getId().equals(commentDto.getId())) {
+            ratingRepository.save(convertToRating(filmId, customerId, commentDto));
+        } else {
+            log.info("Error save uniq");
+            throw ErrorDescription.SAVE_RATING_ERROR_UNIQ.exception();
         }
         log.info("complete save");
     }
@@ -68,11 +59,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public void deleteRating(Long comment_id) {
-        if(!ObjectUtils.isEmpty(ratingRepository.findById(comment_id))) {
-            ratingRepository.deleteById(comment_id);
-        } else {
-            throw ErrorDescription.RATING_NOT_FOUND.exception();
-        }
+        ratingRepository.deleteById(comment_id);
     }
 
     @Override

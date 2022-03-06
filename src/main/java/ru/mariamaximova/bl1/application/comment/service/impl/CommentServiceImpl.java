@@ -17,7 +17,6 @@ import ru.mariamaximova.bl1.application.fiml.domain.FilmRepository;
 import ru.mariamaximova.bl1.application.rating.service.RatingService;
 import ru.mariamaximova.bl1.error.ErrorDescription;
 
-import javax.transaction.UserTransaction;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,8 +34,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final RatingService ratingService;
 
-    private final UserTransaction userTransaction;
-
     @Override
     public List<ResponseCommentDto> getComments(Long filmId) {
         log.info("start getComment({})", filmId);
@@ -49,62 +46,32 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void saveComment(Long filmId, Long customerId, CommentDto commentDto) {
         log.info("start saveComment({}, {}, {})", filmId, customerId, commentDto);
-        try {
-            userTransaction.begin();
-            Comment comment = commentRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
-                    customerRepository.getById(customerId));
-            if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
-                    comment.getId().equals(commentDto.getId())) {
-                commentRepository.save(convertToComment(filmId, customerId, commentDto));
-                userTransaction.commit();
-            } else {
-                userTransaction.rollback();
-                log.info("Error save uniq");
-                throw ErrorDescription.SAVE_COMMENT_ERROR_UNIQ.exception();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Comment comment = commentRepository.getByFilmIdAndCustomerId(filmRepository.getById(filmId),
+                customerRepository.getById(customerId));
+        if (ObjectUtils.isEmpty(comment) || !ObjectUtils.isEmpty(commentDto.getId()) &&
+                comment.getId().equals(commentDto.getId())) {
+            commentRepository.save(convertToComment(filmId, customerId, commentDto));
+        } else {
+            log.info("Error save uniq");
+            throw ErrorDescription.SAVE_COMMENT_ERROR_UNIQ.exception();
         }
         ratingService.saveRating(filmId, customerId, commentDto.getRating());
         log.info("complete save");
     }
 
+
     @Override
     @Transactional
     public void deleteComment(Long comment_id) {
-        try {
-            userTransaction.begin();
-            if (!ObjectUtils.isEmpty(commentRepository.findById(comment_id))) {
-                commentRepository.deleteById(comment_id);
-                ratingService.deleteRating(comment_id);
-                userTransaction.commit();
-            } else {
-                userTransaction.rollback();
-                log.info("Error save uniq");
-                throw ErrorDescription.COMMENT_NOT_FOUND.exception();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+       commentRepository.deleteById(comment_id);
+       ratingService.deleteRating(comment_id);
     }
 
     @Override
     @Transactional
     public void updateStatusComment(Long comment_id) {
-        try {
-            userTransaction.begin();
-            if (!ObjectUtils.isEmpty(commentRepository.findById(comment_id))) {
-                commentRepository.getById(comment_id).set_active(true);
-                ratingService.updateStatusRating(comment_id);
-                userTransaction.commit();
-            } else {
-                userTransaction.rollback();
-                log.info("Error save uniq");
-                throw ErrorDescription.COMMENT_NOT_FOUND.exception();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        commentRepository.getCommentById(comment_id).set_active(true);
+        ratingService.updateStatusRating(comment_id);
     }
 
     private ResponseCommentDto convertToCommentDto(Comment comment) {
