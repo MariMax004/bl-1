@@ -13,13 +13,5 @@ public class CommentDto {
 
     private boolean is_active;
 
-    public CommentDto() {
-    }
 
-    public CommentDto(Long id, String comment, RatingDto rating, boolean is_active) {
-        this.id = id;
-        this.comment = comment;
-        this.rating = rating;
-        this.is_active = is_active;
-    }
 }

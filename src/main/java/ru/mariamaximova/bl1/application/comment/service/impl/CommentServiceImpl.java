@@ -48,8 +48,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<ResponseCommentDto> getCommentsModerator(Long id) {
-            return commentRepository.findAllByFilmId(filmRepository.getById(id)).stream()
+    public List<ResponseCommentDto> getCommentsToModerator() {
+            return commentRepository.getCommentsForModerator().stream()
                     .map(this::convertToCommentDto).sorted(Comparator.comparingLong(ResponseCommentDto::getId))
                     .collect(Collectors.toList());
     }
@@ -84,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void updateStatusComment(Long comment_id) {
-        commentRepository.getCommentById(comment_id).set_active(true);
+        commentRepository.getCommentById(comment_id).setActive(true);
         ratingService.updateStatusRating(comment_id);
     }
 

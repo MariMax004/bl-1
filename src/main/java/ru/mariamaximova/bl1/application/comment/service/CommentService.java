@@ -9,7 +9,8 @@ public interface CommentService {
     List<ResponseCommentDto> getComments(Long filmId);
     ResponseCommentDto getComment(long id);
 
-    List<ResponseCommentDto> getCommentsModerator(Long id);
+    List<ResponseCommentDto> getCommentsToModerator();
+
 
     void saveComment(Long filmId, Long customerId, CommentDto commentDto);
     void deleteComment(Long id);

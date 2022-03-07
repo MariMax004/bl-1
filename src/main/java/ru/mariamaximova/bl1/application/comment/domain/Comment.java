@@ -31,5 +31,5 @@ public class Comment {
     private String comment;
 
     @Column(name = "is_active")
-    private boolean is_active;
+    private boolean isActive;
 }

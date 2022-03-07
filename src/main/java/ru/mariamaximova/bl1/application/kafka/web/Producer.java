@@ -27,10 +27,11 @@ public class Producer {
 
         private static final String TOPIC = "Kafka_Example_json";
 
-        @GetMapping("/publish/{id}")
-        public String post(@PathVariable("id") Long id) {
-            ProducerRecord<String, ResponseCommentDto> record = new ProducerRecord(TOPIC,commentService.getComment(id));
-            kafkaTemplate.send(record);
+        @GetMapping("/publish/{flag}")
+        public String post(@PathVariable("flag") Boolean flag) {
+            commentService.getCommentsToModerator().forEach(it -> kafkaTemplate.send(new ProducerRecord(TOPIC,it)));
+//            ProducerRecord<String, ResponseCommentDto> record = new ProducerRecord(TOPIC,commentService.getComment(id));
+//            kafkaTemplate.send(record);
 
             return "Published successfully";
         }
