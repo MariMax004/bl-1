@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface CommentService {
     List<ResponseCommentDto> getComments(Long filmId);
+    ResponseCommentDto getComment(long id);
+
+    List<ResponseCommentDto> getCommentsModerator(Long id);
 
     void saveComment(Long filmId, Long customerId, CommentDto commentDto);
     void deleteComment(Long id);

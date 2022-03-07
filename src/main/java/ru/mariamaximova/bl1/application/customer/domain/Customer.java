@@ -40,4 +40,6 @@ public class Customer {
 
     @OneToMany(mappedBy = "customerId", cascade = CascadeType.ALL)
     private List<Token> tokens;
+
+
 }

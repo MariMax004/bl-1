@@ -21,7 +21,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfigConsumer {
     @Bean
-    public ConsumerFactory<String, CommentDto> commentDtoConsumerFactory() {
+    public ConsumerFactory<String, ResponseCommentDto> commentDtoConsumerFactory() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -32,8 +32,8 @@ public class KafkaConfigConsumer {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, CommentDto> commentDtoKafkaListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, CommentDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, ResponseCommentDto> commentDtoKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ResponseCommentDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(commentDtoConsumerFactory());
         return factory;
     }

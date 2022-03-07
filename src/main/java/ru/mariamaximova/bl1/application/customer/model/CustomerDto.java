@@ -12,4 +12,7 @@ public class CustomerDto {
 
     private String email;
     private boolean is_moderator;
+
+    public CustomerDto() {
+    }
 }

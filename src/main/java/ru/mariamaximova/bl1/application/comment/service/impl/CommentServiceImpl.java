@@ -43,6 +43,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public ResponseCommentDto getComment(long id) {
+        return convertToCommentDto(commentRepository.getCommentById(id));
+    }
+
+    @Override
+    public List<ResponseCommentDto> getCommentsModerator(Long id) {
+            return commentRepository.findAllByFilmId(filmRepository.getById(id)).stream()
+                    .map(this::convertToCommentDto).sorted(Comparator.comparingLong(ResponseCommentDto::getId))
+                    .collect(Collectors.toList());
+    }
+
+
+    @Override
     @Transactional
     public void saveComment(Long filmId, Long customerId, CommentDto commentDto) {
         log.info("start saveComment({}, {}, {})", filmId, customerId, commentDto);
@@ -67,6 +80,7 @@ public class CommentServiceImpl implements CommentService {
        ratingService.deleteRating(comment_id);
     }
 
+
     @Override
     @Transactional
     public void updateStatusComment(Long comment_id) {
@@ -81,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
         responseCommentDto.setComment(comment.getComment());
         return responseCommentDto;
     }
+
 
     private CustomerDto convertToCustomerDto(Customer customer) {
         CustomerDto customerDto = new CustomerDto();

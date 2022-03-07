@@ -26,8 +26,8 @@ public class ExceptionHandlerUtil extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(ApplicationErrorDto.of("Ошибка сохранения"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ApplicationErrorDto> handleException() {
-        return new ResponseEntity<>(ApplicationErrorDto.of("Ошибка приложения"), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    protected ResponseEntity<ApplicationErrorDto> handleException() {
+//        return new ResponseEntity<>(ApplicationErrorDto.of("Ошибка приложения"), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
