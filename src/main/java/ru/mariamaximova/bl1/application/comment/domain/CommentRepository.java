@@ -13,8 +13,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Comment getByFilmIdAndCustomerId(Film filmId, Customer customerId);
     void deleteById(Long id);
 
-    @Query(value = "select *from comment where comment.is_active = false", nativeQuery = true)
+    @Query(value = "select *from comment where comment.is_active = false and comment.is_moderated = false", nativeQuery = true)
     List<Comment> getCommentsForModerator();
+
+    @Query(value = "select *from comment where comment.is_active = false and comment.is_moderated =true", nativeQuery = true)
+    List<Comment> getCommentsForDelete();
+
 
     Comment getCommentById(Long id);
 }

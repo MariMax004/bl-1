@@ -32,4 +32,7 @@ public class Comment {
 
     @Column(name = "is_active")
     private boolean isActive;
+
+    @Column(name = "is_moderated")
+    private boolean isModerated;
 }

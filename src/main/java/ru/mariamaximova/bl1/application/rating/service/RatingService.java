@@ -11,7 +11,7 @@ public interface RatingService {
 
     void saveRating(Long filmId, Long customerId, RatingDto commentDto);
     void deleteRating(Long id);
-    void updateStatusRating(Long id);
+    void updateStatusRating(Long id, Boolean flag);
 
 
 }

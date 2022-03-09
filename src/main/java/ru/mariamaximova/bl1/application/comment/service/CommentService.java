@@ -11,8 +11,7 @@ public interface CommentService {
 
     List<ResponseCommentDto> getCommentsToModerator();
 
-
     void saveComment(Long filmId, Long customerId, CommentDto commentDto);
     void deleteComment(Long id);
-    void updateStatusComment(Long id);
+    void updateStatusComment(Long id, Boolean flag);
 }

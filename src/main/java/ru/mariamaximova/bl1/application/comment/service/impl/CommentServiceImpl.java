@@ -55,6 +55,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+
+
     @Override
     @Transactional
     public void saveComment(Long filmId, Long customerId, CommentDto commentDto) {
@@ -83,9 +85,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void updateStatusComment(Long comment_id) {
-        commentRepository.getCommentById(comment_id).setActive(true);
-        ratingService.updateStatusRating(comment_id);
+    public void updateStatusComment(Long comment_id, Boolean flag) {
+        commentRepository.getCommentById(comment_id).setActive(flag);
+        commentRepository.getCommentById(comment_id).setModerated(true);
+        ratingService.updateStatusRating(comment_id,flag);
     }
 
     private ResponseCommentDto convertToCommentDto(Comment comment) {

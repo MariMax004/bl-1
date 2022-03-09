@@ -7,6 +7,7 @@ public class RatingDto {
     private Long id;
     private boolean is_active;
     private Long rating;
+    private boolean is_moderated;
 
     public RatingDto() {
     }

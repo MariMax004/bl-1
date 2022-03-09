@@ -13,5 +13,7 @@ public class CommentDto {
 
     private boolean is_active;
 
+    private boolean is_moderated;
+
 
 }

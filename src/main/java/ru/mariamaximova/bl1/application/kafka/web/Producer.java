@@ -1,9 +1,14 @@
 package ru.mariamaximova.bl1.application.kafka.web;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,24 +20,25 @@ import ru.mariamaximova.bl1.application.comment.service.CommentService;
 import ru.mariamaximova.bl1.application.comment.service.impl.CommentServiceImpl;
 import ru.mariamaximova.bl1.application.rating.model.RatingDto;
 
-
-@RestController
-@RequestMapping("kafka")
+@Service
+@Slf4j
 @RequiredArgsConstructor
+@EnableScheduling
 public class Producer {
 
-
         private final KafkaProducer<String, ResponseCommentDto> kafkaTemplate;
+
         private final CommentService commentService;
 
         private static final String TOPIC = "Kafka_Example_json";
 
-        @GetMapping("/publish/{flag}")
-        public String post(@PathVariable("flag") Boolean flag) {
+        @Scheduled(cron = "0 * * * * *")
+        @Transactional
+        public void sendToCheck() {
+            log.info("send message for admin");
             commentService.getCommentsToModerator().forEach(it -> kafkaTemplate.send(new ProducerRecord(TOPIC,it)));
 //            ProducerRecord<String, ResponseCommentDto> record = new ProducerRecord(TOPIC,commentService.getComment(id));
 //            kafkaTemplate.send(record);
-
-            return "Published successfully";
+            log.info("messages send");
         }
 }

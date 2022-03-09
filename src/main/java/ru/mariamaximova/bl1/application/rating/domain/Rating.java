@@ -32,5 +32,8 @@ public class Rating {
 
     @Column(name = "is_active")
     private boolean is_active;
+
+    @Column(name = "is_moderated")
+    private boolean isModerated;
 }
 

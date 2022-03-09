@@ -3,6 +3,7 @@ package ru.mariamaximova.bl1.application.rating.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import ru.mariamaximova.bl1.application.customer.domain.Customer;
@@ -63,8 +64,10 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public void updateStatusRating(Long comment_id) {
+    public void updateStatusRating(Long comment_id, Boolean flag) {
+
         ratingRepository.getById(comment_id).set_active(true);
+        ratingRepository.getById(comment_id).setModerated(flag);
     }
 
     private ResponseRatingDto convertToRatingDto(Rating comment) {
